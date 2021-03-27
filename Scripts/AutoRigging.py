@@ -1,21 +1,14 @@
 import bpy
 
-print('Try')
+a = bpy.data.objects['Armature1']
+b = bpy.data.objects['Sphere']
 
-bpy.ops.object.select_all(action='DESELECT')
+bpy.ops.object.select_all(action='DESELECT') # deselect all object
 
+a.select_set(True)
+b.select_set(True)     # select the object for the 'parenting'
 
-#Select mesh firsy
-bpy.data.objects['Cube'].select_set(True)
+bpy.context.view_layer.objects.active = a    # the active object will be the parent of all selected object
 
-#select the ARMATURE
-bpy.data.objects['Armature1'].select_set(True)
-
-#apply ARMATURE to the mesh
-bpy.ops.object.parent_set(type='ARMATURE_AUTO')
-
-
-
-vertex_in_range = []
-
-
+bpy.ops.object.parent_set(type='ARMATURE')
+# Now The parent of b is a
