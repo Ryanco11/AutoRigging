@@ -1,5 +1,6 @@
-import bpy
 import re
+
+import bpy
 
 a = bpy.data.objects['Armature1']
 b = bpy.data.objects['Sphere']
