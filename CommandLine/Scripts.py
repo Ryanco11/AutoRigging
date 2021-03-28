@@ -1,7 +1,4 @@
-import os
-import sys
 import bpy
-import re
 
 unweighted_path = r'/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/UnweightedMesh'
 weghted_path = r'/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/WeightedMesh'
@@ -15,15 +12,33 @@ bpy.ops.object.delete(use_global=False)
 
 
 #import target mesh
-bpy.ops.import_scene.fbx( filepath = source_unweighted_model_path )
+target_mesh = bpy.ops.import_scene.fbx( filepath = source_unweighted_model_path )
 
 #import source mesh
-#avoid mess up targe mesh name
-bpy.ops.import_scene.fbx( filepath = source_weight_model_path )
+#import secondly, avoid mess up targe mesh name
+source_mesh = bpy.ops.import_scene.fbx( filepath = source_weight_model_path )
+
+
+
+#select weight apply order
+    #object mode , deselect all
+bpy.ops.object.mode_set(mode='OBJECT')
+bpy.ops.object.select_all(action='DESELECT')
+    #select all mesh
+bpy.ops.object.select_by_type(type='MESH')
+    #active source mesh
+bpy.context.view_layer.objects.active = bpy.data.objects['QT0054Z']
+
+
+
 
 #apply weight
+bpy.ops.paint.weight_paint_toggle()
+bpy.ops.object.data_transfer(use_reverse_transfer=True,data_type=('VGROUP_WEIGHTS'),layers_select_src=('NAME'),layers_select_dst=('ALL'))
+
 
 #object mode
+bpy.ops.object.mode_set(mode='OBJECT')
 
 #deselect all
 bpy.ops.object.select_all(action='DESELECT')
@@ -37,9 +52,10 @@ for c in children:
     c.select_set(True)
 
 #export target weighted fbx
-# # bpy.ops.object.select_by_type(type='MESH')
-# # bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY')
 bpy.ops.export_scene.fbx(filepath="/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/WeightedMesh/A/weighted_baldric.FBX", use_selection = True)
+
+
+
 
 
 #save blend file
