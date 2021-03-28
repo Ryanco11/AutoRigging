@@ -39,6 +39,8 @@ for v in selectedVerts:
 
 #transfer body weight to cloth
 
+bpy.ops.paint.weight_paint_toggle()
+bpy.ops.object.data_transfer(use_reverse_transfer=True,data_type=('VGROUP_WEIGHTS'),layers_select_src=('NAME'),layers_select_dst=('ALL'))
 
 
 #remove unused vertex group
