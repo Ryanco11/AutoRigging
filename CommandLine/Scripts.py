@@ -11,10 +11,10 @@ bpy.ops.object.select_all(action='SELECT')
 bpy.ops.object.delete(use_global=False)
 
 
-#import target mesh
+#import source mesh
 source_mesh = bpy.ops.import_scene.fbx( filepath = source_unweighted_model_path )
 
-#import source mesh
+#import target mesh
 #import secondly, avoid mess up targe mesh name
 target_mesh = bpy.ops.import_scene.fbx( filepath = source_weight_model_path )
 

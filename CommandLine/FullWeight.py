@@ -5,6 +5,9 @@ import bmesh
 
 full_weight_source_path = r'/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/UnweightedMesh/A'
 full_weight_target_path = r'/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/WeightedMesh/A'
+
+body_mesh_path = r'/Users/ryancosean/Desktop/AvatarFBX/latest_model/model/body_zhongmo_0107.FBX'
+
 #for each fbx in folder A
 def LoopFBX(full_weight_source_path):
     # r=root, d=directories, f = files
@@ -22,8 +25,65 @@ def SetFullWeight(source_fbx_path, file_name):
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete(use_global=False)
 
+# import source fbx
+    source_mesh = bpy.ops.import_scene.fbx( filepath = body_mesh_path )
+# delete source mesh
+    bpy.ops.object.select_by_type(type='MESH')
+    bpy.ops.object.delete(use_global=False)
+
 # import target mesh
     source_mesh = bpy.ops.import_scene.fbx(filepath=source_fbx_path)
+
+
+###set target mesh parent to source armature
+    a = bpy.data.objects['Bip001']
+    #select the only mesh in scene
+    bpy.ops.object.select_by_type(type='MESH')
+    selection_names = bpy.context.selected_objects
+    b = bpy.data.objects[selection_names[0].name]
+
+    bpy.ops.object.select_all(action='DESELECT') # deselect all object
+
+    a.select_set(True)
+    b.select_set(True)     # select the object for the 'parenting'
+
+    bpy.context.view_layer.objects.active = a    # the active object will be the parent of all selected object
+
+    bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
+# Now The parent of b is a
+
+    #active mesh object
+    c = bpy.data.objects[selection_names[0].name]
+    # c.select_set(True)
+    #
+
+    group = c.vertex_groups.new( name = 'TestSpine' )
+
+# #save blend file
+#     bpy.ops.wm.save_mainfile(filepath = r'/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/WeightedMesh/A/TestFullWeight.blend')
+
+
+    #then
+    # new_vertex_group = bpy.context.active_object.vertex_groups.new(name='_GROUP_NAME_')
+    # bpy.ops.object.vertex_group_add()
+    # bpy.context.object.active_index = 0
+    # bpy.ops.object.vertex_group_set_active(group='Group')
+    # bpy.context.object.name = "TestSpine"
+    # c.vertex_groups.active.name = "TestSpine"
+    # group = c.vertex_groups['TestSpine']
+    # vertex_indices = bpy.data.vertices.index
+    bpy.context.view_layer.objects.active = c
+    Verts = [i.index for i in bpy.context.active_object.data.vertices]
+
+    group.add( Verts, 1, 'REPLACE' )
+
+
+
+
+
+
+
+
 
 # deselect all object
     bpy.ops.object.mode_set(mode='OBJECT')
@@ -75,23 +135,31 @@ def SetFullWeight(source_fbx_path, file_name):
     print("complete mesh validation, start setting weights")
 
 #set vertex group weight to 1 (most of time, it just has only one vertex group)
-    b = bpy.data.objects[mesh_root_name]
-    b.select_set(True)
-    bpy.context.view_layer.objects.active = b
 
-    #select all vertices, ready for vg assign
-    bpy.ops.object.mode_set(mode='EDIT')
-    bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.object.mode_set(mode='OBJECT')
-
-    # clear all vertex group weight in Sphere
-    mode = bpy.context.active_object.mode
-    bpy.ops.object.mode_set(mode='OBJECT')
-    ob = bpy.context.active_object
-    selectedVerts = [v for v in ob.data.vertices if v.select]
-    for v in selectedVerts:
-        for i, g in enumerate(v.groups):
-            v.groups[i].weight = 0.5
+    # # deselect all object
+    # bpy.ops.object.mode_set(mode='OBJECT')
+    # bpy.ops.object.select_all(action='DESELECT')
+    #
+    # d = bpy.data.objects[mesh_root_name]
+    # d.select_set(True)
+    # bpy.context.view_layer.objects.active = d
+    #
+    # #select all vertices, ready for vg assign
+    # bpy.ops.object.mode_set(mode='EDIT')
+    # bpy.ops.mesh.select_all(action='SELECT')
+    # bpy.ops.object.mode_set(mode='OBJECT')
+    # print("Selected all vertex")
+    #
+    # # set all vertex group weight in Sphere
+    # # mode = bpy.context.active_object.mode
+    # # bpy.ops.object.mode_set(mode='OBJECT')
+    # ob = bpy.context.active_object
+    # print(ob.name)
+    # selectedVerts = [v for v in ob.data.vertices if v.select]
+    # for v in selectedVerts:
+    #     for i, g in enumerate(v.groups):
+    #         print("Setted")
+    #         v.groups[i].weight = 0.5
 
 # export to target folder
     #object mode
