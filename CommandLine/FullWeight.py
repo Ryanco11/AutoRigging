@@ -56,7 +56,11 @@ def SetFullWeight(source_fbx_path, file_name):
 
     #active mesh object
     c = bpy.data.objects[selection_names[0].name]
-    group = c.vertex_groups.new( name = 'Bip001_Spine1' )
+    if file_name.lower().__contains__('ta'):
+        group = c.vertex_groups.new(name='Head_S_N')
+    elif file_name.lower().__contains__('qt'):
+        group = c.vertex_groups.new( name = 'Bip001_Spine1' )
+
     bpy.context.view_layer.objects.active = c
     Verts = [i.index for i in bpy.context.active_object.data.vertices]
     group.add( Verts, 1, 'REPLACE' )
