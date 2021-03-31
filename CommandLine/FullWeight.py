@@ -52,30 +52,32 @@ def SetFullWeight(source_fbx_path, file_name):
     bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
 # Now The parent of b is a
 
+
+
     #active mesh object
     c = bpy.data.objects[selection_names[0].name]
-    # c.select_set(True)
-    #
-
-    group = c.vertex_groups.new( name = 'TestSpine' )
-
-# #save blend file
-#     bpy.ops.wm.save_mainfile(filepath = r'/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/WeightedMesh/A/TestFullWeight.blend')
-
-
-    #then
-    # new_vertex_group = bpy.context.active_object.vertex_groups.new(name='_GROUP_NAME_')
-    # bpy.ops.object.vertex_group_add()
-    # bpy.context.object.active_index = 0
-    # bpy.ops.object.vertex_group_set_active(group='Group')
-    # bpy.context.object.name = "TestSpine"
-    # c.vertex_groups.active.name = "TestSpine"
-    # group = c.vertex_groups['TestSpine']
-    # vertex_indices = bpy.data.vertices.index
+    group = c.vertex_groups.new( name = 'Bip001_Spine1' )
     bpy.context.view_layer.objects.active = c
     Verts = [i.index for i in bpy.context.active_object.data.vertices]
-
     group.add( Verts, 1, 'REPLACE' )
+    # c.save
+
+
+###
+    # modifier = b.modifiers.new(type='ARMATURE', name="Armature")
+    # modifier.object = a
+    # bpy.context.scene.objects.link(b)
+    # bpy.context.scene.objects.active = b
+
+    # ob = bpy.context.object
+    # ob.modifiers.new(name = 'Bip001', type = 'ARMATURE')
+
+    # ob = bpy.data.objects['MyObject']
+    # a = bpy.data.objects['MyArmature']
+
+    b.modifiers.new(name = 'Skeleton', type = 'ARMATURE')
+    b.modifiers['Skeleton'].object = a
+###
 
 
 
@@ -136,30 +138,30 @@ def SetFullWeight(source_fbx_path, file_name):
 
 #set vertex group weight to 1 (most of time, it just has only one vertex group)
 
-    # # deselect all object
+    # deselect all object
+    bpy.ops.object.mode_set(mode='OBJECT')
+    bpy.ops.object.select_all(action='DESELECT')
+
+    d = bpy.data.objects[mesh_root_name]
+    d.select_set(True)
+    bpy.context.view_layer.objects.active = d
+
+    #select all vertices, ready for vg assign
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.object.mode_set(mode='OBJECT')
+    print("Selected all vertex")
+
+    # set all vertex group weight in Sphere
+    # mode = bpy.context.active_object.mode
     # bpy.ops.object.mode_set(mode='OBJECT')
-    # bpy.ops.object.select_all(action='DESELECT')
-    #
-    # d = bpy.data.objects[mesh_root_name]
-    # d.select_set(True)
-    # bpy.context.view_layer.objects.active = d
-    #
-    # #select all vertices, ready for vg assign
-    # bpy.ops.object.mode_set(mode='EDIT')
-    # bpy.ops.mesh.select_all(action='SELECT')
-    # bpy.ops.object.mode_set(mode='OBJECT')
-    # print("Selected all vertex")
-    #
-    # # set all vertex group weight in Sphere
-    # # mode = bpy.context.active_object.mode
-    # # bpy.ops.object.mode_set(mode='OBJECT')
-    # ob = bpy.context.active_object
-    # print(ob.name)
-    # selectedVerts = [v for v in ob.data.vertices if v.select]
-    # for v in selectedVerts:
-    #     for i, g in enumerate(v.groups):
-    #         print("Setted")
-    #         v.groups[i].weight = 0.5
+    ob = bpy.context.active_object
+    print(ob.name)
+    selectedVerts = [v for v in ob.data.vertices if v.select]
+    for v in selectedVerts:
+        for i, g in enumerate(v.groups):
+            print("Weight Setted 0.5")
+            v.groups[i].weight = 0.5
 
 # export to target folder
     #object mode
@@ -175,10 +177,11 @@ def SetFullWeight(source_fbx_path, file_name):
     children = [ob for ob in bpy.data.objects if ob.parent == a]
     for c in children:
         c.select_set(True)
+        print("child name : " + c.name)
 
     #export target weighted fbx
-    bpy.ops.export_scene.fbx(filepath="/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/WeightedMesh/A/" + file_name, use_selection = True)
-    print(file_name)
+    bpy.ops.export_scene.fbx(filepath="/Users/ryancosean/Documents/PycharmProjects/AutoRigging/AutoRigging/CommandLine/WeightedMesh/A/" + file_name)
+    print("file name: " + file_name + " fbx has exported")
 
 
 
