@@ -56,5 +56,10 @@ def SetFullWeight(source_fbx_path, file_name):
 
 
 ###chairfy which bone need to be used
-###define geomtory for each bone
+    #read vertices region, freature out mesh region
+    #store each bone's name to list
+###define geomtory for each bone###
+    #predefined, and uses at run time
 ###apply weight to each bone
+    #rough apply
+    #clean up out bone region vertices's weight
