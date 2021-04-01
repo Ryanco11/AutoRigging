@@ -8,16 +8,19 @@ full_weight_target_path = r'/Users/ryancosean/Documents/PycharmProjects/AutoRigg
 
 body_mesh_path = r'/Users/ryancosean/Desktop/AvatarFBX/latest_model/model/body_zhongmo_0107.FBX'
 
+weight_set = 1
+
 #for each fbx in folder A
 def LoopFBX(full_weight_source_path):
     # r=root, d=directories, f = files
-    count = 0;
+    count = 1;
     for r, d, f in os.walk(full_weight_source_path):
         f.sort()
         for file in f:
             if file.lower().endswith(".fbx"):
                 SetFullWeight(os.path.join(r, file), file)
-                # print(os.path.join(r, file))
+                print("processing the " + str(count) + " fbx : " + os.path.join(r, file))
+                count += 1
 
 def SetFullWeight(source_fbx_path, file_name):
 
@@ -49,10 +52,8 @@ def SetFullWeight(source_fbx_path, file_name):
 
     bpy.context.view_layer.objects.active = a    # the active object will be the parent of all selected object
 
+    # set b's parent to a
     bpy.ops.object.parent_set(type='OBJECT', keep_transform=True)
-# Now The parent of b is a
-
-
 
     #active mesh object
     c = bpy.data.objects[selection_names[0].name]
@@ -64,31 +65,10 @@ def SetFullWeight(source_fbx_path, file_name):
     bpy.context.view_layer.objects.active = c
     Verts = [i.index for i in bpy.context.active_object.data.vertices]
     group.add( Verts, 1, 'REPLACE' )
-    # c.save
 
-
-###
-    # modifier = b.modifiers.new(type='ARMATURE', name="Armature")
-    # modifier.object = a
-    # bpy.context.scene.objects.link(b)
-    # bpy.context.scene.objects.active = b
-
-    # ob = bpy.context.object
-    # ob.modifiers.new(name = 'Bip001', type = 'ARMATURE')
-
-    # ob = bpy.data.objects['MyObject']
-    # a = bpy.data.objects['MyArmature']
-
+    #attach vg to bone (its target bone is the name of vg)
     b.modifiers.new(name = 'Skeleton', type = 'ARMATURE')
     b.modifiers['Skeleton'].object = a
-###
-
-
-
-
-
-
-
 
 
 # deselect all object
@@ -165,7 +145,7 @@ def SetFullWeight(source_fbx_path, file_name):
     for v in selectedVerts:
         for i, g in enumerate(v.groups):
             print("Weight Setted 0.5")
-            v.groups[i].weight = 0.5
+            v.groups[i].weight = weight_set
 
 # export to target folder
     #object mode
