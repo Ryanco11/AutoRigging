@@ -55,6 +55,6 @@ def SetFullWeight(source_fbx_path, file_name):
     print("complete mesh validation, start setting weights")
 
 
-    ###chairfy which bone need to be used
-    ###define geomtory for each bone
-    ###apply weight to each bone
+###chairfy which bone need to be used
+###define geomtory for each bone
+###apply weight to each bone
